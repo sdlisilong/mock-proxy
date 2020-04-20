@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy.invocation;
+package com.sdlisilong.mockproxy.invocation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +26,7 @@ public final class MockConfigSPILoader {
 
 	public static final String MOCK_RESOURCE_LOCATION = "META-INF/mock-proxy.config";
 
-	private static final Map<String, List<Object>> proxyConfigMap = new ConcurrentHashMap<>();
+	private static final Map<String, List<Object>> proxyConfigMap = new ConcurrentHashMap<String, List<Object>>();
 
 	private MockConfigSPILoader() {
 	}
@@ -63,7 +63,7 @@ public final class MockConfigSPILoader {
 							List<Object> objects = proxyConfigMap.get(proxyInterface);
 
 							if (objects == null) {
-								objects = new ArrayList<>();
+								objects = new ArrayList<Object>();
 								proxyConfigMap.put(proxyInterface, objects);
 							}
 

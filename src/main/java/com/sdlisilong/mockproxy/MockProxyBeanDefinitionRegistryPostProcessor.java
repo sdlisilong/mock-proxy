@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy;
+package com.sdlisilong.mockproxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,7 +148,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
 
         definition.getConstructorArgumentValues().addGenericArgumentValue(beanClazz);
 
-        definition.setBeanClass(MockProxyBeanFactory.class);
+        definition.setBeanClass(java.com.sdlisilong.mockproxy.MockProxyBeanFactory.class);
 
         definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
         registry.registerBeanDefinition(beanName, definition);
@@ -160,7 +160,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
      * @return Set<Class<?>> Set<Class<?>>
      */
     private Set<Class<?>> scannerBasePackages(String basePackage) {
-        Set<Class<?>> set = new LinkedHashSet<>();
+        Set<Class<?>> set = new LinkedHashSet<Class<?>>();
         String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
                 resolveBasePackage(basePackage) + '/' + DEFAULT_RESOURCE_PATTERN;
         try {
