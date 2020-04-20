@@ -32,7 +32,7 @@ public final class MockConfigSPILoader {
 	}
 
 	/**
-	 * 初始化产品
+	 * 初始化
 	 * @param classLoader
 	 */
 	public synchronized static void loadMockProxyConfig(ClassLoader classLoader) {
