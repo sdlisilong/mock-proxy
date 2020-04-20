@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy;
+package com.sdlisilong.mockproxy;
 
 import org.springframework.beans.factory.FactoryBean;
 
@@ -17,7 +17,7 @@ public class MockProxyBeanFactory<T> implements FactoryBean<T> {
 
     @Override
     public T getObject() throws Exception {
-        return (T)MockProxyCglibFactory.getProxy(interfaceType);
+        return (T) MockProxyCglibFactory.getProxy(interfaceType);
     }
 
     @Override

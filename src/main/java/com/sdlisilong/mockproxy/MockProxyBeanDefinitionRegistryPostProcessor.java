@@ -148,7 +148,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
 
         definition.getConstructorArgumentValues().addGenericArgumentValue(beanClazz);
 
-        definition.setBeanClass(java.com.sdlisilong.mockproxy.MockProxyBeanFactory.class);
+        definition.setBeanClass(MockProxyBeanFactory.class);
 
         definition.setAutowireMode(GenericBeanDefinition.AUTOWIRE_BY_TYPE);
         registry.registerBeanDefinition(beanName, definition);

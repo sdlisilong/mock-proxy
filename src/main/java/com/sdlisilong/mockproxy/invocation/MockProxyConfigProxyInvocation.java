@@ -1,11 +1,11 @@
-package java.com.sdlisilong.mockproxy.invocation;
+package com.sdlisilong.mockproxy.invocation;
 
 import com.google.gson.Gson;
+import com.sdlisilong.mockproxy.MockProxyConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
-import java.com.sdlisilong.mockproxy.MockProxyConfig;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy.invocation;
+package com.sdlisilong.mockproxy.invocation;
 
 import java.lang.reflect.Method;
 

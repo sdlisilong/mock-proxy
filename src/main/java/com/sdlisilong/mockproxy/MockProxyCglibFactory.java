@@ -1,6 +1,8 @@
-package java.com.sdlisilong.mockproxy;
+package com.sdlisilong.mockproxy;
 
 import com.google.gson.Gson;
+import com.sdlisilong.mockproxy.invocation.DefaultResultInvocation;
+import com.sdlisilong.mockproxy.invocation.ParamObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cglib.proxy.Callback;
@@ -11,8 +13,6 @@ import org.springframework.cglib.proxy.MethodProxy;
 import org.springframework.cglib.proxy.NoOp;
 import org.springframework.util.ReflectionUtils;
 
-import java.com.sdlisilong.mockproxy.invocation.DefaultResultInvocation;
-import java.com.sdlisilong.mockproxy.invocation.ParamObject;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;

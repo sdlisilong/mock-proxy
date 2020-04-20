@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy;
+package com.sdlisilong.mockproxy;
 
 /**
  * @author sdlisilong

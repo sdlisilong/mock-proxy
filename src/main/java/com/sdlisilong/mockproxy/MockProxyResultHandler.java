@@ -1,4 +1,4 @@
-package java.com.sdlisilong.mockproxy;
+package com.sdlisilong.mockproxy;
 
 import com.google.gson.Gson;
 import org.slf4j.Logger;
