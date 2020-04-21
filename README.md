@@ -7,10 +7,22 @@
 
 通过以下配置，只需要在junit里面调用自己本地的接口一样。
 
-**注意：**Map接口实现类如果没有自定义会返回null，List,Set接口实现类，没有自定义会自动构建返回值
+**注意：**Map接口实现类如果没有自定义会返回null，List,Set接口实现类，没有自定义会自动构建返回值。
+
+要求版本：JRE1.6以上，Spring3.3以上
 
 # 使用说明(需要在用到的项目里添加信息)
-1. 在spring.xml里添加配置
+1. 在pom.xml引入maven
+
+   ```xml
+   <dependency>
+   	<groupId>com.sdlisilong.mockproxy</groupId>
+   	<artifactId>mock-proxy</artifactId>
+   	<version>1.0.0-SNAPSHOT</version>
+   </dependency>
+   ```
+
+2. 在spring.xml里添加配置
 ```xml
 <bean class="com.sdlisilong.mockproxy.MockProxyBeanDefinitionRegistryPostProcessor"/>
 ```
@@ -22,6 +34,8 @@
    enabled=true #是否开启代理
    enabledProxyDubbo=true   #开启dubbo代理，默认false
    daoPackage=com.dao       #需要代理数据库返回数据的dao层，添加包名
+   #被代理类的路径前缀，可以是包名，也可以是完整的类路径，多个用,隔开
+   proxyClassPathPrefix=com.redis,com.mq
    ```
 
 3. 添加代理接口返回值配置信息mockProxy-default.properties：

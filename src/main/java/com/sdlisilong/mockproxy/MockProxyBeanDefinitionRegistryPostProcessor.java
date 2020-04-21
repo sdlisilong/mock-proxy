@@ -7,6 +7,7 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
@@ -29,6 +30,7 @@ import org.springframework.util.StringUtils;
 import java.beans.Introspector;
 import java.io.IOException;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -55,7 +57,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
 
         //代理dao
         if (!StringUtils.isEmpty(mockProxyConfig.getDaoPackage())) {
-            resetBaseDao(registry, mockProxyConfig);
+            proxyBaseDao(registry, mockProxyConfig);
         }
 
         //代理dubbo
@@ -63,12 +65,15 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
             proxyDubbo(registry, mockProxyConfig);
         }
 
-        System.out.println("-------start-------------------------------------------------");
-        for (String name : registry.getBeanDefinitionNames()) {
-            BeanDefinition beanDefinition = registry.getBeanDefinition(name);
-            System.out.println(beanDefinition.getBeanClassName());
-        }
-        System.out.println("-------end-------------------------------------------------");
+        //类路径前缀代理
+        proxyClassPathPrefix(registry, mockProxyConfig);
+
+//        System.out.println("-------start-------------------------------------------------");
+//        for (String name : registry.getBeanDefinitionNames()) {
+//            BeanDefinition beanDefinition = registry.getBeanDefinition(name);
+//            System.out.println(beanDefinition.getBeanClassName());
+//        }
+//        System.out.println("-------end-------------------------------------------------");
 
     }
 
@@ -82,7 +87,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
      * @param registry
      * @param mockProxyConfig
      */
-    private void resetBaseDao(BeanDefinitionRegistry registry, MockProxyConfig mockProxyConfig) {
+    private void proxyBaseDao(BeanDefinitionRegistry registry, MockProxyConfig mockProxyConfig) {
         Set<Class<?>> proxyClassSet = this.scannerBasePackages(mockProxyConfig.getDaoPackage());
 
         for (Class beanClazz : proxyClassSet) {
@@ -115,7 +120,7 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
                 BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
 
                 if (beanDefinition instanceof RootBeanDefinition) {
-                    String beanClassName = ((RootBeanDefinition) beanDefinition).getBeanClass().getName();
+                    String beanClassName = ((RootBeanDefinition) beanDefinition).getBeanClassName();
                     if ("com.alibaba.dubbo.config.spring.ReferenceBean".equals(beanClassName)) {
                         PropertyValue interfaceProperty = beanDefinition.getPropertyValues().getPropertyValue("interface");
 
@@ -136,6 +141,37 @@ public class MockProxyBeanDefinitionRegistryPostProcessor implements BeanDefinit
                 }
 
 
+            }
+        } catch (ClassNotFoundException e) {
+            logger.error("classNotFoundException: {}", e);
+        }
+    }
+    /**
+     * 代理类路径前缀
+     * @param registry
+     * @param mockProxyConfig
+     */
+    private void proxyClassPathPrefix(BeanDefinitionRegistry registry, MockProxyConfig mockProxyConfig) {
+
+        List<String> proxyClassPathPrefixList = mockProxyConfig.getProxyClassPathPrefixList();
+
+        if (proxyClassPathPrefixList == null || proxyClassPathPrefixList.size() == 0) {
+            return;
+        }
+
+        String[] names = registry.getBeanDefinitionNames();
+        try {
+            for (String beanName : names) {
+                BeanDefinition beanDefinition = registry.getBeanDefinition(beanName);
+
+                String beanClassName = beanDefinition.getBeanClassName();
+
+                for (String proxyClassPathPrefix : proxyClassPathPrefixList) {
+                    if (beanClassName.startsWith(proxyClassPathPrefix)) {
+                        registBean(registry, Class.forName(beanClassName), beanName);
+                        break;
+                    }
+                }
             }
         } catch (ClassNotFoundException e) {
             logger.error("classNotFoundException: {}", e);
