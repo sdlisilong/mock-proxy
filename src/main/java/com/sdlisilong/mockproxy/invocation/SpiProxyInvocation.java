@@ -1,5 +1,6 @@
 package com.sdlisilong.mockproxy.invocation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class SpiProxyInvocation implements ProxyInvocation {
     }
 
     @Override
-    public Object preHandle(ParamObject paramObject) throws Exception {
+    public Object preHandle(ParamObject paramObject) {
 
         Method method = paramObject.getMethod();
         String proxyInterfaceName = method.getDeclaringClass().getName();;
@@ -34,10 +35,14 @@ public class SpiProxyInvocation implements ProxyInvocation {
 
         Object resultObject = null;
         for (Object o : objects) {
-            Method proxyMethod = o.getClass().getMethod(method.getName(), method.getParameterTypes());
+            try {
+                Method proxyMethod = o.getClass().getMethod(method.getName(), method.getParameterTypes());
 
-            if (proxyMethod != null) {
-                resultObject = proxyMethod.invoke(o, args);
+                if (proxyMethod != null) {
+                    resultObject = proxyMethod.invoke(o, args);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
 
