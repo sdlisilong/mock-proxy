@@ -14,11 +14,14 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author sdlisilong
@@ -34,6 +37,9 @@ public class MockProxyConfig {
 
     //默认后缀
     private static String commonResultFilePrefix = "default";
+
+    //默认后缀
+    private Set<String> methodPrefixSet = new HashSet<String>();
 
     //解析的代理接口返回信息
     private Map<String, Map<String, String>> resultAllMap = new HashMap<String, Map<String, String>>();
@@ -82,6 +88,14 @@ public class MockProxyConfig {
                     classPathPrefixList.add(classPathPrefix);
                 }
                 this.proxyClassPathPrefixList = classPathPrefixList;
+            }
+
+            String customConfigAndMethodPrefix = properties.getProperty("customConfigAndMethodPrefix", "");
+
+            if (!StringUtils.isEmpty(customConfigAndMethodPrefix)) {
+                for (String methodPrefix : StringUtils.commaDelimitedListToStringArray((String) customConfigAndMethodPrefix)) {
+                    methodPrefixSet.add(methodPrefix);
+                }
             }
 
         }
@@ -145,8 +159,40 @@ public class MockProxyConfig {
         return proxyClassPathPrefixList;
     }
 
+    public Set<String> getMethodPrefixSet() {
+        return methodPrefixSet;
+    }
+
+//    public Map<String, String> getResultMap(String configFilePrefix) {
+//        if (StringUtils.isEmpty(configFilePrefix)) {
+//            configFilePrefix = commonResultFilePrefix;
+//        }
+//
+//        Map<String, String> map = resultAllMap.get(configFilePrefix);
+//
+//        return map;
+//    }
+
     public Map<String, String> getResultMap() {
-        Map<String, String> map = resultAllMap.get(commonResultFilePrefix);
+        //获取threadLocal的测试方法
+        String threadMethodName = MockProxyContextUtil.getInstance().getMethodName();
+
+        String configFilePrefix = null;
+
+        if (!StringUtils.isEmpty(threadMethodName) && methodPrefixSet.size() > 0) {
+            for (String methodPrefix : methodPrefixSet) {
+                if (threadMethodName.endsWith(methodPrefix)) {
+                    configFilePrefix = methodPrefix;
+                    break;
+                }
+            }
+        }
+
+        if (StringUtils.isEmpty(configFilePrefix)) {
+            configFilePrefix = commonResultFilePrefix;
+        }
+
+        Map<String, String> map = resultAllMap.get(configFilePrefix);
 
         return map;
     }
